@@ -120,7 +120,8 @@ You can easily connect to your database to verify that changes have been applied
 1.  Execute a `psql` session inside the running `postgres_db` container:
     ```sh
     docker exec -it postgres_db psql -U myuser -d mydatabase
-    ```    *(You will be prompted for the password, which is `mypassword`)*
+    ```
+    *(You will be prompted for the password, which is `mypassword`)*
 
 2.  List all tables to see `users` and `flyway_schema_history`:
     ```sql
