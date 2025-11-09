@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  # This is the PostgreSQL database service
+  db:
+    image: postgres:14-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # This service runs the Flyway migrations
+  flyway:
+    image: flyway/flyway:latest
+    container_name: flyway_migrations
+    command: migrate
+    volumes:
+      - ./database/sql:/flyway/sql
+      - ./database/flyway.conf:/flyway/conf/flyway.conf
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  # This volume persists the database data
+  postgres_data:
